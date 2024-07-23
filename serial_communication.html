@@ -16,7 +16,7 @@
         let reader;
         let writer;
 
-        // Hàm kết nối tới cổng serial
+        // kết nối tới cổng serial
         async function connect() {
             try {
                 port = await navigator.serial.requestPort();
@@ -31,7 +31,7 @@
             }
         }
 
-        // Hàm gửi thông điệp đến ESP8266/ESP32
+        // gửi thông điệp đến esp8266
         async function send() {
             if (!writer) {
                 console.error('Chưa kết nối với cổng serial');
@@ -49,8 +49,7 @@
             }
         }
 
-        // Hàm đọc dữ liệu từ ESP8266/ESP32
-        async function receive() {
+        async function receive() { //đọc dữ liệu từ esp8266
             if (!reader) {
                 console.error('Chưa kết nối với cổng serial');
                 document.getElementById("console").innerText += "Chưa kết nối với cổng serial\n";
@@ -74,7 +73,8 @@
             }
         }
 
-        // Xử lý sự kiện click của các nút
+
+        
         document.getElementById("connect").addEventListener("click", connect);
         document.getElementById("send").addEventListener("click", send);
         document.getElementById("receive").addEventListener("click", receive);

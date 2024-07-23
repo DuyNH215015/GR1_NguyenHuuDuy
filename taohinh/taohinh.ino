@@ -9,7 +9,6 @@
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-// Ví dụ về bitmap hình ảnh (128x64 pixels)
 const unsigned char myBitmap[] PROGMEM = {
 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 
@@ -78,7 +77,7 @@ const unsigned char myBitmap[] PROGMEM = {
 };
 
 void setup() {
-  Wire.begin(14, 12); // GPIO14 (D5) là SCL, GPIO12 (D6) là SDA
+  Wire.begin(14, 12);
   if(!display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
     Serial.println(F("SSD1306 allocation failed"));
     for(;;);
@@ -86,12 +85,11 @@ void setup() {
   display.display();
   delay(2000);
   display.clearDisplay();
-  
-  // Vẽ hình ảnh bitmap lên màn hình
+  //vẽ bitmap lên màn hình
   display.drawBitmap(0, 0, myBitmap, SCREEN_WIDTH, SCREEN_HEIGHT, SSD1306_WHITE);
   display.display();
 }
 
 void loop() {
-  // Không có gì cần lặp lại
+
 }
