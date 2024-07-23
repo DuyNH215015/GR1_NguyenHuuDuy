@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serial Communication</title>
+</head>
+<body>
+    <button id="connect">Chọn cổng COM</button>
+    <button id="send">Gửi thông báo</button>
+    <button id="receive">Đọc thông tin</button>
+    <div id="console"></div>
+
+    <script>
+        let port;
+        let reader;
+        let writer;
+
+        // Hàm kết nối tới cổng serial
+        async function connect() {
+            try {
+                port = await navigator.serial.requestPort();
+                await port.open({ baudRate: 115200 });
+                reader = port.readable.getReader();
+                writer = port.writable.getWriter();
+                console.log('Kết nối thành công');
+                document.getElementById("console").innerText += "Đã kết nối tới cổng COM\n";
+            } catch (err) {
+                console.error('Lỗi khi kết nối:', err);
+                document.getElementById("console").innerText += "Không thể kết nối tới cổng COM\n";
+            }
+        }
+
+        // Hàm gửi thông điệp đến ESP8266/ESP32
+        async function send() {
+            if (!writer) {
+                console.error('Chưa kết nối với cổng serial');
+                document.getElementById("console").innerText += "Chưa kết nối với cổng serial\n";
+                return;
+            }
+            const data = new TextEncoder().encode("Hello Duy Day\n");
+            try {
+                await writer.write(data);
+                console.log('Thông điệp đã gửi');
+                document.getElementById("console").innerText += "Thông điệp đã gửi\n";
+            } catch (err) {
+                console.error('Lỗi khi gửi thông điệp:', err);
+                document.getElementById("console").innerText += "Lỗi khi gửi thông điệp\n";
+            }
+        }
+
+        // Hàm đọc dữ liệu từ ESP8266/ESP32
+        async function receive() {
+            if (!reader) {
+                console.error('Chưa kết nối với cổng serial');
+                document.getElementById("console").innerText += "Chưa kết nối với cổng serial\n";
+                return;
+            }
+            const textDecoder = new TextDecoder();
+            try {
+                while (true) {
+                    const { value, done } = await reader.read();
+                    if (done) {
+                        reader.releaseLock();
+                        console.log('Kết thúc đọc dữ liệu');
+                        document.getElementById("console").innerText += "Kết thúc đọc dữ liệu\n";
+                        break;
+                    }
+                    document.getElementById("console").innerText += textDecoder.decode(value);
+                }
+            } catch (err) {
+                console.error('Lỗi khi đọc dữ liệu:', err);
+                document.getElementById("console").innerText += "Lỗi khi đọc dữ liệu\n";
+            }
+        }
+
+        // Xử lý sự kiện click của các nút
+        document.getElementById("connect").addEventListener("click", connect);
+        document.getElementById("send").addEventListener("click", send);
+        document.getElementById("receive").addEventListener("click", receive);
+    </script>
+</body>
+</html>
